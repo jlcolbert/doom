@@ -117,6 +117,8 @@ For the rest of my setup, please see my dotfiles.
 ** Possible future features
 * Rudimentary Configuration
 ** Personal information
+Enter in the info we want when things auto-fill names/emails.
+I think this also involves GPG, but I'm not sure.
 #+begin_src elisp :tangle no :noweb-ref personal-info
 (setq user-full-name    "Jay L. Colbert"
       user-mail-address "jaylcolbert@gmail.com")
@@ -124,10 +126,15 @@ For the rest of my setup, please see my dotfiles.
 
 ** Better defaults
 *** Simple settings
+I have ADHD, so I need to see the time and battery in the program.
+Otherwise, I won't remember to look up at the time in my Mac menu bar.
 #+begin_src elisp :tangle no :noweb-ref simple-settings
 (display-time-mode 1)
 (display-battery-mode 1)
+#+end_src
 
+I don't want to see =.DS_Store= files when I'm searching.
+#+begin_src elisp :tangle no :noweb-ref simple-settings
 (add-to-list 'completion-ignored-extensions ".DS_Store")
 #+end_src
 

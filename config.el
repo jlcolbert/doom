@@ -80,7 +80,6 @@
 
 (display-time-mode 1)
 (display-battery-mode 1)
-
 (add-to-list 'completion-ignored-extensions ".DS_Store")
 
 (setq initial-frame-alist
