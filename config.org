@@ -196,6 +196,8 @@ This is where I configure the modules I've activated in =init.el=.
 Other packages are configured elsewhere.
 *** Completion
 **** Company
+I hate when the completion suggestions pop up super fast.
+This gives a bit of a delay.
 #+begin_src elisp :tangle no :noweb-ref company
 (after! company
   (setq company-idle-delay 0.5))
@@ -205,6 +207,13 @@ Other packages are configured elsewhere.
 **** Deft
 **** Doom
 These are the Doom settings meant to be configured outside of module configuration.
+The first two just give the buffer a nicer looking name when there's nothing in it.
+The third is from Tecosaur.
+It puts some cool icons that indicate if something is an Org Roam file or a project file.
+It also lets you know if you've saved your changes via some neat circles.
+Finally, we have another delay setting.
+This time, it speeds up the Which Key menu.
+This variable says to set it before Which Key loads, which is why I'm not configuring it as its own module.
 #+begin_src elisp :tangle no :noweb-ref doom
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom"
@@ -224,6 +233,8 @@ These are the Doom settings meant to be configured outside of module configurati
 #+end_src
 
 **** Modeline
+Another Tecosaur creation.
+This improves the PDF information in the modeline and cleans up the buffer name.
 #+begin_src elisp :tangle no :noweb-ref modeline
 (after! doom-modeline
   (doom-modeline-def-segment buffer-name
@@ -266,6 +277,14 @@ These are the Doom settings meant to be configured outside of module configurati
 
 *** Editor
 **** Evil
+Ensures a new window is always created to the right or below.
+It also keeps the cursor from moving back when entering normal mode.
+I do this to make adding links and citations easier for me.
+
+When creating a new window, it will now prompt for the buffer or file you want to open.
+
+And then, we add some keybindings to use arrows to navigate windows.
+We can also rotate layouts.
 #+begin_src elisp :tangle no :noweb-ref evil
 (after! evil
   (setq evil-vsplit-window-right t
@@ -691,9 +710,26 @@ org-roam-node-display-template
 #+end_src
 
 *** Theme
+I change my theme a lot.
+I don't like dark modes when the contrast is too high.
+I don't like white modes when they're too bright.
+Basically, I like muted, almost dusty tones with lower contrast.
+
+Nord is usually my go-to.
+I also have really enjoyed Opera and Opera Light lately.
+Sometimes the color palette of Earl Grey isn't varied enough.
+I like how Flatwhite highlights different elements.
+
+I didn't think I liked Zenburn, but it turns out I do.
+Let's give it a try.
 #+begin_src elisp :tangle no :noweb-ref theme
 ;;(setq doom-theme 'doom-earl-grey)
-(setq doom-theme 'doom-nord)
+;;(setq doom-theme 'doom-flatwhite)
+;;(setq doom-theme 'doom-nord)
+;;(setq doom-theme 'doom-opera)
+;;(setq doom-theme 'doom-opera-light)
+;;(setq doom-theme 'doom-wilmersdorf)
+(setq doom-theme 'doom-zenburn)
 #+end_src
 
 *** Line numbers
