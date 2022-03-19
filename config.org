@@ -310,7 +310,12 @@ We can also rotate layouts.
 
 *** Tools
 **** Biblio
+Because this is the configuration for my personal laptop, not my work laptop (I'm a librarian, but I also have faculty status), I don't do as much research on here as on there.
+However, I am working on a second degree, so being able to write and cite is crucial.
+I also have a Zettelkasten, and I like being able to cite with that.
+
 Because I use Vertico, the bibliographic package to complement org-cite is citar.
+All of these settings are from the Citar page.
 #+begin_src elisp :tangle no :noweb-ref citar
 (after! citar
   ;; use consult-completing-read for enhanced interface
