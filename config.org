@@ -52,14 +52,17 @@ If you want your setup exactly like mine, here are the necessary prerequisites.
 All of these commands are run on the command line.
 
 1. Have a Mac.
+
    I'm on the M1 chip now.
 
 2. Install Homebrew
+
 #+begin_src sh :tangle no
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #+end_src
 
 3. Install Emacs Plus
+
    I am on Emacs 28, built with native compilation.
    You don't have to do native comp, but it's supposed to be faster I think.
    I also added a different icon, but that's not necessary.
@@ -70,6 +73,7 @@ ln -s /opt/homebrew/Cellar/emacs-plus@27/27.2/Emacs.app /Applications
 #+end_src
 
 4. Install Doom
+
    First we need some dependencies:
 #+begin_src sh :tangle no
 # required dependencies
