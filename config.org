@@ -811,6 +811,8 @@ You hit escape, the number of lines you want to move, and the direction.
 (setq display-line-numbers-type 'relative)
 #+end_src
 
+If this makes the performance slow, you can toggle them off manually with ~SPC t l~.
+
 * Packages
 ** Consult-org-roam
 #+begin_src elisp :tangle no :noweb-ref p-consult-org-roam
