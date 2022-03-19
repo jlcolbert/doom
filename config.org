@@ -48,6 +48,66 @@
 * Introduction
 ** Why Emacs?
 ** Using this config
+If you want your setup exactly like mine, here are the necessary prerequisites:
+
+1. Have a Mac.
+   I'm on the M1 chip now.
+
+2. Install Homebrew
+   #+begin_src sh :tangle no
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   #+end_src
+
+3. Install Emacs Plus
+   I am on Emacs 28, built with native compilation.
+   You don't have to do native comp, but it's supposed to be faster I think.
+   I also added a different icon, but that's not necessary.
+   #+begin_src sh :tangle no
+brew tap d12frosted/emacs-plus
+brew install emacs-plus@28 --with-native-comp --with-nobu417-big-sur-icon
+ln -s /opt/homebrew/Cellar/emacs-plus@27/27.2/Emacs.app /Applications
+   #+end_src
+
+4. Install Doom
+   First we need some dependencies:
+   #+begin_src sh :tangle no
+# required dependencies
+brew install git ripgrep
+# optional dependencies
+brew install coreutils fd
+# Installs clang
+xcode-select --install
+   #+end_src
+
+  Now we can install Doom.
+  This will take forever because of the native comp.
+  #+begin_src sh :tangle no
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
+~/.config/emacs/bin/doom install
+  #+end_src
+
+  I put my configs in =~/.config= as much as possible.
+  The documentation puts it in a =~/.emacs.d= folder.
+
+  Then I add it to my ~PATH~.
+  I use the fish shell, so my way of doing this will be different.
+  Change as necessary for your shell.
+  #+begin_src sh :tangle no
+fish_add_path $HOME/.config/emacs/bin
+  #+end_src
+
+  Now we can use the ~doom~ utility.
+  I recommend running ~doom sync~ first.
+
+  My standard workflow after installing/removing packages or changing =init.el= is:
+  #+begin_src sh :tangle no
+doom sync -up
+doom purge -g
+doom doctor
+  #+end_src
+
+For the rest of my setup, please see my dotfiles.
+
 ** Current issues
 ** Possible future features
 * Rudimentary Configuration
