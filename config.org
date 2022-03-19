@@ -331,12 +331,19 @@ All of these settings are from the Citar page.
 
 *** Languages
 **** Clojure
+To be written...
+
 **** Org
+According to the Doom documentation, the Org directory needs to be set before org-mode loads.
+Because I have that whole frame title thing that involves org-roam, I also load that immediately.
 #+begin_src elisp :tangle no :noweb-ref org-dirs
 (setq org-directory       "~/Documents/org/"
       org-roam-directory  (file-truename "~/Documents/org/digital-garden/org"))
 #+end_src
 
+Configuring org and the module flags I enabled is a little complicated.
+I nest the configurations.
+I think I'm allowed to do that.
 #+begin_src elisp :tangle no :noweb-ref org :noweb yes
 (after! org
   <<org-visuals>>
@@ -345,11 +352,15 @@ All of these settings are from the Citar page.
 #+end_src
 
 ***** Visuals
+When I'm reading, I don't like to see the emphasis markers.
+I also like having a fancy little triangle for the ellipsis in headings and other collapsible items.
 #+begin_src elisp :tangle no :noweb-ref org-visuals
 (setq org-hide-emphasis-markers t
       org-ellipsis " ▾ ")
 #+end_src
 
+And then configuring this package means the emphasis markers will show back up when my cursor is inside that word/phrase.
+I turned it off for links because it made navigating around my org-roam files really annoying.
 #+begin_src elisp :tangle no :noweb-ref org-appear
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)
@@ -363,12 +374,18 @@ All of these settings are from the Citar page.
 #+end_src
 
 ***** Capture
+Alright, this is a big one.
+
+Basically all of this is from tecosaur's config.
+Because it's so complicated, I'm also breaking it up into pieces.
 #+begin_src elisp :tangle no :noweb-ref org-capture :noweb yes
 (after! org-capture
   <<prettify-capture>>
   <<org-capture-templates>>)
 #+end_src
 
+I autoload this function.
+It's part of the settings that make the capture template popup look better.
 #+begin_src elisp :tangle no :noweb-ref org-capture-select-template-prettier
 (defun org-capture-select-template-prettier (&optional keys)
   "Select a capture template, in a prettier way than default
@@ -388,6 +405,7 @@ Lisp programs can force the template by setting KEYS to a string."
                `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
 #+end_src
 
+And same thing here.
 #+begin_src elisp :tangle no :noweb-ref org-mks-pretty
 (defun org-mks-pretty (table title &optional prompt specials)
   "Select a member of an alist with multiple keys. Prettified.
@@ -480,6 +498,13 @@ is selected, only the bare key is returned."
         (when buffer (kill-buffer buffer))))))
 #+end_src
 
+And then here is where we set our templates.
+I tried autoloading this function, too, but I couldn't get it to work.
+I need to play around with that.
+
+I removed the Recipe template, and I added a Slipbox template right at the top.
+This is where I capture "fleeting notes" for my Zettelkasten:
+notes that aren't ready to actually be literature notes, but notes which I do want to flesh out.
 #+begin_src elisp :tangle no :noweb-ref org-capture-templates
 (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 (defun set-org-capture-templates ()
@@ -612,6 +637,7 @@ is selected, only the bare key is returned."
                              #'org-capture-reinitialise-hook)))))
 #+end_src
 
+And then this makes all this work or something? I'm not sure.
 #+begin_src elisp :tangle no :noweb-ref prettify-capture
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 (advice-add 'org-mks :override #'org-mks-pretty)
