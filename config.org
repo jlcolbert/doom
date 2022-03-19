@@ -644,6 +644,12 @@ And then this makes all this work or something? I'm not sure.
 #+end_src
 
 ***** Roam
+I try to be tool-agnostic and even method-agnostic.
+There is no one tool, no one method, that will be perfect for me.
+However, the Zettelkasten technique does seem to align with how my brain processes information.
+I have tried many tools, but org-roam is the one I like best.
+
+This is gonna be complicated, so chunking it up once again.
 #+begin_src elisp :tangle no :noweb-ref org-roam :noweb yes
 (after! org-roam
   <<consult-org-roam>>
@@ -655,7 +661,30 @@ And then this makes all this work or something? I'm not sure.
 #+end_src
 
 ****** Smart notes workflow
+These settings are largely pulled from jethrokuan's How I take notes in org roam.
+Side note, I agree with his decision to not include a productivity system in this.
+My Zettelkasten can be used for productivity, but it is not only about that.
+I do not want this to be a task management system, like GTD.
+
 ******* Capture templates
+These are the three kinds of notes I can make.
+
+The "main" note is where I capture and write literature notes, or proper zettels.
+These are not notes I take while reading.
+Rather, they are the thoughts and questions I have that are inspired by the notes I take while reading, or even just in general.
+They are what happens after I process information, not the processing itself.
+They are also atomic, meaning each note only contains one idea.
+For each new idea, make a new zettel.
+
+Reference notes are for capturing information I want to cite or include in my literature notes.
+They are mainly there to be bibliographic.
+If necessary, I can write things like "on page 26 it says X."
+I have a bookmarklet that will make reference notes from websites.
+I have a separate function that makes reference notes from my Zotero library.
+
+Articles are not from the original Zettelkasten method.
+jethrokuan uses them as a place to write longer-form pieces, such as blog posts.
+They are a good place to write notes that are more complicated.
 #+begin_src elisp :tangle no :noweb-ref org-roam-capture-templates
 org-roam-capture-templates
 '(("m" "main" plain
@@ -677,6 +706,7 @@ org-roam-capture-templates
 #+end_src
 
 ******* Create the node property "type"
+This returns the type based on which template I used.
 #+begin_src elisp :tangle no :noweb-ref org-roam-node-type
 (cl-defmethod org-roam-node-type ((node org-roam-node))
   "Return the TYPE of NODE."
@@ -689,12 +719,14 @@ org-roam-capture-templates
 #+end_src
 
 ******* Modify display template to show type
+And this will show that type when I do a file search.
 #+begin_src elisp :tangle no :noweb-ref org-roam-node-display-template
 org-roam-node-display-template
 (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag))
 #+end_src
 
 ******* Reference zettels
+This is the autoloaded function that creates reference notes from my Zotero library.
 #+begin_src elisp :tangle no :noweb-ref node-from-cite
 (defun jc/org-roam-node-from-cite (keys-entries)
   (interactive (list (citar-select-ref :multiple nil    :rebuild-cache t)))
@@ -715,11 +747,13 @@ org-roam-node-display-template
 #+end_src
 
 ******* Every zettel is a draft
+This autoloaded function adds the "draft" tag to each new node.
 #+begin_src elisp :tangle no :noweb-ref new-node-as-draft
 (defun jc/tag-new-node-as-draft ()
   (org-roam-tag-add '("draft")))
 #+end_src
 
+This hook makes that an automated process.
 #+begin_src elisp :tangle no :noweb-ref node-draft-hook
 (add-hook 'org-roam-capture-new-node-hook #'jc/tag-new-node-as-draft)
 #+end_src
