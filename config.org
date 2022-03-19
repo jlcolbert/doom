@@ -760,11 +760,16 @@ This hook makes that an automated process.
 
 ** Visual settings
 *** Font face
+Pretty standard.
+I use the ever-popular Fira Code for any monospace typing, and I use Overpass for standard.
+Sometimes I use Fira Sans or Alegreya instead of Overpass.
 #+begin_src elisp :tangle no :noweb-ref fonts
 (setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 13))
 #+end_src
 
+This is so I can use both monospace and regular fonts in the same buffer, mainly text modes.
+You have to configure the ~mixed-pitch-set-height~ variable if you want to be able to use different font sizes for the two fonts.
 #+begin_src elisp :tangle no :noweb-ref mixed-pitch
 (use-package mixed-pitch
   :hook
@@ -798,6 +803,10 @@ Let's give it a try.
 #+end_src
 
 *** Line numbers
+You know, I normally don't like line numbers.
+I like the clean, minimal look.
+I've been turned on to relative line numbers recently because it makes it easy to move around the buffer.
+You hit escape, the number of lines you want to move, and the direction.
 #+begin_src elisp :tangle no :noweb-ref line-num
 (setq display-line-numbers-type 'relative)
 #+end_src
