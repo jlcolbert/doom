@@ -1,6 +1,7 @@
 #+title:     Doom Emacs Literate Config
 #+author:    Jay L. Colbert
 #+email:     jaylcolbert@gmail.com
+#+property: header-args :mkirp yes
 
 * Table of Contents :toc_3:
 - [[#introduction][Introduction]]
@@ -1286,7 +1287,7 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
 ** Autoloads
 *** =hydras.el=
 #+begin_src elisp :tangle autoload/hydras.el :noweb yes
-;;; autoload/hydra-posframe.el -*- lexical-binding: t; -*-
+;;; autoload/hydra.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 <<describe-foo-at-point>>
