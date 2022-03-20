@@ -348,6 +348,7 @@ I think I'm allowed to do that.
 (after! org
   <<org-visuals>>
   <<org-capture>>
+  <<org-journal>>
   <<org-roam>>)
 #+end_src
 
@@ -641,6 +642,15 @@ And then this makes all this work or something? I'm not sure.
 #+begin_src elisp :tangle no :noweb-ref prettify-capture
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 (advice-add 'org-mks :override #'org-mks-pretty)
+#+end_src
+
+***** Journal
+#+begin_src elisp :tangle no :noweb-ref org-journal
+(setq org-journal-dir "~/Documents/org/journal/"
+      org-journal-date-prefix "* "
+      org-journal-time-prefix "** "
+      org-journal-date-format "%B %d, %Y (%A) "
+      org-journal-file-format "%Y-%m-%d.org")
 #+end_src
 
 ***** Roam

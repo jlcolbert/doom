@@ -364,6 +364,11 @@
                     (set-org-capture-templates)
                     (remove-hook 'server-after-make-frame-hook
                                  #'org-capture-reinitialise-hook))))))
+  (setq org-journal-dir "~/Documents/org/journal/"
+        org-journal-date-prefix "* "
+        org-journal-time-prefix "** "
+        org-journal-date-format "%B %d, %Y (%A) "
+        org-journal-file-format "%Y-%m-%d.org")
   (after! org-roam
     (use-package! consult-org-roam
       :demand t
