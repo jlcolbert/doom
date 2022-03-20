@@ -164,7 +164,7 @@
 (after! evil
   (setq evil-vsplit-window-right t
         evil-split-window-below t
-        evil-move-cursor-back nil
+        evil-move-cursor-back t
         evil-kill-on-visual-paste nil)
   (defadvice! prompt-for-buffer (&rest _)
     :after '(evil-window-split evil-window-vsplit)
@@ -193,9 +193,7 @@
 (use-package! info-colors
   :commands info-colors-fontify-node
   :init
-  (add-hook 'Info-selection-hook #'info-colors-fontify-node)
-  ;;(add-hook 'Info-mode-hook #'mixed-pitch-mode)
-  )
+  (add-hook 'Info-selection-hook #'info-colors-fontify-node))
 
 (use-package major-mode-hydra
   :bind

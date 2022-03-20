@@ -205,6 +205,9 @@ This gives a bit of a delay.
 
 *** UI
 **** Deft
+I have Deft enabled, but I need to do my config for it.
+I don't really use it that much, but it's something that I know is already installed or something by another package, so I like to at least have the Doom configuration turned on.
+
 **** Doom
 These are the Doom settings meant to be configured outside of module configuration.
 The first two just give the buffer a nicer looking name when there's nothing in it.
@@ -289,7 +292,7 @@ We can also rotate layouts.
 (after! evil
   (setq evil-vsplit-window-right t
         evil-split-window-below t
-        evil-move-cursor-back nil
+        evil-move-cursor-back t
         evil-kill-on-visual-paste nil)
   (defadvice! prompt-for-buffer (&rest _)
     :after '(evil-window-split evil-window-vsplit)
@@ -331,7 +334,10 @@ All of these settings are from the Citar page.
 
 *** Languages
 **** Clojure
-To be written...
+I mainly use Clojure for generative art.
+My setup isn't that complicated because of it.
+
+To be written (I haven't made art in a few months)...
 
 **** Org
 According to the Doom documentation, the Org directory needs to be set before org-mode loads.
@@ -645,6 +651,9 @@ And then this makes all this work or something? I'm not sure.
 #+end_src
 
 ***** Journal
+I really only have journal enabled on my personal machine for the TTRPGs I play with my friends.
+It's a good way to take notes and automatically have it linked to a date.
+I also like using the journal for intersitial journaling.
 #+begin_src elisp :tangle no :noweb-ref org-journal
 (setq org-journal-dir "~/Documents/org/journal/"
       org-journal-date-prefix "* "
@@ -671,10 +680,12 @@ This is gonna be complicated, so chunking it up once again.
 #+end_src
 
 ****** Smart notes workflow
-These settings are largely pulled from jethrokuan's How I take notes in org roam.
+These settings are largely pulled from jethrokuan's [[https://jethrokuan.github.io/org-roam-guide/][How I Take Notes with Org-roam]].
 Side note, I agree with his decision to not include a productivity system in this.
 My Zettelkasten can be used for productivity, but it is not only about that.
 I do not want this to be a task management system, like GTD.
+When I feel the need to put a task management system on this computer, I like using the org-gtd package.
+I like it so much I sponsor the creator.
 
 ******* Capture templates
 These are the three kinds of notes I can make.
@@ -825,11 +836,18 @@ If this makes the performance slow, you can toggle them off manually with ~SPC t
 
 * Packages
 ** Consult-org-roam
+This is a really fun package.
+Basically, it gives a live preview feature to searching org-roam files, as well as some ripgrep functionality.
 #+begin_src elisp :tangle no :noweb-ref p-consult-org-roam
 (package! consult-org-roam
   :recipe (:host github :repo "jgru/consult-org-roam"))
 #+end_src
 
+The intended use is to use the functions below to do searching and have the live preview.
+However, I noticed that after you trigger a function for the first time during a session, it gives the live preview feature to regular org-roam searching.
+So, I did a hacky thing and figured out how to get that without using the package's functions.
+
+I put the ~use-package!~ block within the org-roam block and demanded it, so it loads as soon as org-roam does.
 #+begin_src elisp :tangle no :noweb-ref consult-org-roam
 (use-package! consult-org-roam
   :demand t
@@ -840,15 +858,19 @@ If this makes the performance slow, you can toggle them off manually with ~SPC t
 #+end_src
 
 ** Doct
+Doct is a nicer way of declaring org-capture templates.
 #+begin_src elisp :tangle no :noweb-ref p-doct
 (package! doct)
 #+end_src
 
+I don't really write my own templates, but I like the pretty setup tecosaur has, and I don't know how to get that without the doct setup he has.
+So I figure, might as well use this, too.
 #+begin_src elisp :tangle no :noweb-ref doct
 (use-package! doct
   :commands doct)
 #+end_src
 
+All of the below blocks are from tecosaur, and I have them autoloaded.
 #+begin_src elisp :tangle no :noweb-ref +doct-icon-declaration-to-icon
 (defun +doct-icon-declaration-to-icon (declaration)
   "Convert :icon declaration to icon"
@@ -874,17 +896,21 @@ If this makes the performance slow, you can toggle them off manually with ~SPC t
 #+end_src
 
 ** Hydra-posframe
+This package is recommended by the major-mode-hydra package.
 #+begin_src elisp :tangle no :noweb-ref p-hydra-posframe
 (package! hydra-posframe
   :recipe (:host github :repo "Ladicle/hydra-posframe"))
 #+end_src
 
+This function puts the hydra posframe near the bottom of the frame.
+I got the code from the maintainer or major-mode-hydra.
 #+begin_src elisp :tangle no :noweb-ref jc-frame-bottom-poshandler
 (defun jc-frame-bottom-poshandler (info)
   (let ((pos (posframe-poshandler-frame-center info)))
     (cons (car pos) (+ (cdr pos) 100))))
 #+end_src
 
+And this is where we configure the package.
 #+begin_src elisp :tangle no :noweb-ref hydra-posframe
 (use-package! hydra-posframe
   :hook (after-init . hydra-posframe-enable)
@@ -896,24 +922,30 @@ If this makes the performance slow, you can toggle them off manually with ~SPC t
 #+end_src
 
 ** Info-colors
+This just makes info pages look nicer.
+It gives them colors, does some fontification, and enables mixed-pitch.
 #+begin_src elisp :tangle no :noweb-ref p-info-colors
 (package! info-colors)
 #+end_src
 
+I was having a hard time using the setup from tecosaur.
+Maybe I need to go back and test again, now that I am using a theme that shows the colors better.
 #+begin_src elisp :tangle no :noweb-ref info-colors
 (use-package! info-colors
   :commands info-colors-fontify-node
   :init
-  (add-hook 'Info-selection-hook #'info-colors-fontify-node)
-  ;;(add-hook 'Info-mode-hook #'mixed-pitch-mode)
-  )
+  (add-hook 'Info-selection-hook #'info-colors-fontify-node))
 #+end_src
 
 ** Major-mode-hydra
+Major-mode-hydra provides the pretty-hydra package.
+I had never really used hydras before, but the Zetteldesk package has suggested hydra keybindings and uses pretty-hydra.
 #+begin_src elisp :tangle no :noweb-ref p-major-mode-hydra
 (package! major-mode-hydra)
 #+end_src
 
+This function is from the maintainer of major-mode-hydra.
+Basically, it shows the documentation for whatever item under the cursor in elisp mode.
 #+begin_src elisp :tangle no :noweb-ref describe-foo-at-point
 (defun describe-foo-at-point ()
   "Show the documentation of the Elisp function and variable near point.
@@ -941,6 +973,7 @@ This checks in turn:
           ((setq sym (function-at-point)) (describe-function sym)))))
 #+end_src
 
+This generates the title of the hydra and an icon based on the major mode.
 #+begin_src elisp :tangle no :noweb-ref jc-major-mode-hydra-title-generator
 (defun jc-major-mode-hydra-title-generator (_)
   `(with-mode-icon major-mode
@@ -949,6 +982,9 @@ This checks in turn:
                    1.1))
 #+end_src
 
+And here is where we configure it.
+I have a quit key that will cover all hydras made with this package.
+And I also took the example elisp mode hydra.
 #+begin_src elisp :tangle no :noweb-ref major-mode-hydra
 (use-package major-mode-hydra
   :bind
@@ -977,11 +1013,14 @@ This checks in turn:
 #+end_src
 
 ** Org-ol-tree
+Org-ol-tree provides a side-buffer outline while in org mode.
+I think it uses treemacs as its underlying package.
 #+begin_src elisp :tangle no :noweb-ref p-org-ol-tree
 (package! org-ol-tree
   :recipe (:host github :repo "Townk/org-ol-tree"))
 #+end_src
 
+A convenient keybinding.
 #+begin_src elisp :tangle no :noweb-ref org-ol-tree
 (use-package! org-ol-tree
   :commands org-ol-tree
@@ -993,11 +1032,15 @@ This checks in turn:
 #+end_src
 
 ** Org-roam-desktop
+Org-roam-desktop is meant to "emulate" the step of the Zettelkasten method where you take a cluster of notes and spread them on a desktop.
+This gives you a visual overview of the notes in that topic cluster, and it makes it easy to arrange them, see new connections, etc.
 #+begin_src elisp :tangle no :noweb-ref p-org-roam-desktop
 (package! org-roam-desktop
   :recipe (:host github :repo "jgru/org-roam-desktop"))
 #+end_src
 
+This package creates a file for the desktop, and it can only add org-roam nodes.
+When it adds a node to the desktop, it transcludes the content of the node.
 #+begin_src elisp :tangle no :noweb-ref org-roam-desktop
 (use-package! org-roam-desktop
   :after org
@@ -1010,10 +1053,17 @@ This checks in turn:
 #+end_src
 
 ** Org-transclusion
+Org-transclusions gives you the ability to transclude text from one note into another.
+It can make it easy to include quotations in a document without retyping them.
+I also think you can use a certain function to edit the transcluded text and have it change in the original document.
+And maybe the transcluded text changes when you edit the original document, but I'm not sure.
+I'll need to test!
 #+begin_src elisp :tangle no :noweb-ref p-org-transclusion
 (package! org-transclusion)
 #+end_src
 
+This is the default configuration suggested by the package.
+When I start using this package more, I'll change the keybindings.
 #+begin_src elisp :tangle no :noweb-ref org-transclusion
 (use-package! org-transclusion
   :commands org-transclusion-mode
@@ -1023,17 +1073,26 @@ This checks in turn:
 #+end_src
 
 ** Rotate
+With this, you can rotate window layouts.
 #+begin_src elisp :tangle no :noweb-ref p-rotate
 (package! rotate)
 #+end_src
 
 ** Zetteldesk
+Zetteldesk, like org-roam-desktop, emulates spreading your cluster of notes on a desktop surface to arrange and whatnot.
+It differs from org-roam-desktop in a few ways.
+First, it creates a buffer instead of a document for the desktop, but you can always save that.
+Two, it's not limited to org-roam nodes.
+You can also add info pages, buffers, other org files, and PDFs into the desktop.
 #+begin_src elisp :tangle no :noweb-ref p-zetteldesk
-;; ~/.doom.d/packages.el
 (package! zetteldesk
   :recipe (:host github :repo "Vidianos-Giannitsis/zetteldesk.el"))
 #+end_src
 
+This is the configuration I created as the suggested one for Doom users of the package.
+Chiefly, this configuration uses the hydra keybindings.
+I also made a mega configuration with other keybinding suggestions.
+You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldesk.el/wiki/Doom-Configuration][Wiki]].
 #+begin_src elisp :tangle no :noweb-ref zetteldesk
 (use-package! zetteldesk
   :after org-roam
