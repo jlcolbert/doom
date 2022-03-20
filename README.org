@@ -1,0 +1,23 @@
+#+title:     Doom Configuration
+#+author:    Jay L. Colbert
+#+email:     jaylcolbert@gmail.com
+
+#+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
+
+This is the literate configuration for my Doom Emacs setup.
+Here, you will only find three relevant files:
+
++ =config.org=
++ =config.el=
++ =init.el=
+
+My rationale for only including those three files, instead of also including my =autoload/= files and =packages.el= is that those two files are created by =config.org=, and there isn't anything fancy about how they're tangled.
+You can see the file skeletons in =config.org=.
+
+However, I include =config.el= so that people can see how the main configuration looks when tangled.
+I do some nesting and whatnot in there, and even I get confused.
+I like to help others who are just learning.
+
+And finally, I include =init.el= because it is not tangled from =config.org=.
+That file is loaded before =config.org= is tangled by Doom, so the first time using this config wouldn't actually work, since the file wouldn't exist yet if I just had =config.org= in the repo.
+Some people include it, but they usually don't rely on Doom's built-in literate config settings.
