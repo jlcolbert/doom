@@ -913,7 +913,7 @@ I got the code from the maintainer or major-mode-hydra.
 And this is where we configure the package.
 #+begin_src elisp :tangle no :noweb-ref hydra-posframe
 (use-package! hydra-posframe
-  :hook (after-init . hydra-posframe-enable)
+  :hook (after-init . hydra-posframe-mode)
   :config
   (setq hydra-posframe-parameters '((alpha 100 100)
                                     (left-fringe . 10)

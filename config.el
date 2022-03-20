@@ -183,7 +183,7 @@
         "C-<right>"      #'+evil/window-move-right))
 
 (use-package! hydra-posframe
-  :hook (after-init . hydra-posframe-enable)
+  :hook (after-init . hydra-posframe-mode)
   :config
   (setq hydra-posframe-parameters '((alpha 100 100)
                                     (left-fringe . 10)
