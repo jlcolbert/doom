@@ -39,7 +39,15 @@
 ;;(setq doom-theme 'doom-opera)
 ;;(setq doom-theme 'doom-opera-light)
 ;;(setq doom-theme 'doom-wilmersdorf)
-(setq doom-theme 'doom-zenburn)
+;;(setq doom-theme 'doom-zenburn)
+(defun jc/apply-theme (appearance)
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'doom-earl-grey t))
+    ('dark (load-theme 'doom-zenburn t))))
+
+(add-hook 'ns-system-appearance-change-functions #'jc/apply-theme)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -104,18 +112,19 @@
          (let ((project-name (projectile-project-name)))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name)))))
-      which-key-idle-delay 0.5)
+      which-key-idle-delay 0.5
+      +org-roam-auto-backlinks-buffer t)
 
 (after! citar
   ;; use consult-completing-read for enhanced interface
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-  (setq! citar-bibliography   '("~/Documents/org/digital-garden/org/biblio.bib")
-         citar-library-paths  '("~/Documents/Zotero"))
-  (setq citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))
-        citar-symbol-separator "  "))
+  (setq citar-bibliography      '("~/Documents/org/digital-garden/org/biblio.bib")
+         citar-library-paths  '("~/Documents/Zotero")
+         citar-symbols
+         `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+           (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+           (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))
+         citar-symbol-separator "  "))
 
 (after! company
   (setq company-idle-delay 0.5))
@@ -164,7 +173,7 @@
 (after! evil
   (setq evil-vsplit-window-right t
         evil-split-window-below t
-        evil-move-cursor-back t
+        evil-move-cursor-back nil
         evil-kill-on-visual-paste nil)
   (defadvice! prompt-for-buffer (&rest _)
     :after '(evil-window-split evil-window-vsplit)
@@ -402,7 +411,11 @@
         :immediate-finish t
         :unnarrowed t))
      org-roam-node-display-template
-     (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))))
+     (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag))
+     org-roam-mode-sections
+     '((org-roam-backlinks-section :unique t)
+       org-roam-reflinks-section
+       org-roam-unlinked-references-section))))
 
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)

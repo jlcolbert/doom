@@ -233,7 +233,8 @@ This variable says to set it before Which Key loads, which is why I'm not config
          (let ((project-name (projectile-project-name)))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name)))))
-      which-key-idle-delay 0.5)
+      which-key-idle-delay 0.5
+      +org-roam-auto-backlinks-buffer t)
 #+end_src
 
 **** Modeline
@@ -293,7 +294,7 @@ We can also rotate layouts.
 (after! evil
   (setq evil-vsplit-window-right t
         evil-split-window-below t
-        evil-move-cursor-back t
+        evil-move-cursor-back nil
         evil-kill-on-visual-paste nil)
   (defadvice! prompt-for-buffer (&rest _)
     :after '(evil-window-split evil-window-vsplit)
@@ -324,13 +325,13 @@ All of these settings are from the Citar page.
 (after! citar
   ;; use consult-completing-read for enhanced interface
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-  (setq! citar-bibliography   '("~/Documents/org/digital-garden/org/biblio.bib")
-         citar-library-paths  '("~/Documents/Zotero"))
-  (setq citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))
-        citar-symbol-separator "  "))
+  (setq citar-bibliography      '("~/Documents/org/digital-garden/org/biblio.bib")
+         citar-library-paths  '("~/Documents/Zotero")
+         citar-symbols
+         `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+           (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+           (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))
+         citar-symbol-separator "  "))
 #+end_src
 
 *** Languages
@@ -664,6 +665,10 @@ I also like using the journal for intersitial journaling.
 #+end_src
 
 ***** Roam
+I'm gonna unpin org-roam so I always get the latest version:
+#+begin_src elisp :tangle no :noweb-ref p-org-roam
+(unpin! org-roam)
+#+end_src
 I try to be tool-agnostic and even method-agnostic.
 There is no one tool, no one method, that will be perfect for me.
 However, the Zettelkasten technique does seem to align with how my brain processes information.
@@ -677,7 +682,8 @@ This is gonna be complicated, so chunking it up once again.
   <<org-roam-node-type>>
   (setq
    <<org-roam-capture-templates>>
-   <<org-roam-node-display-template>>))
+   <<org-roam-node-display-template>>
+   <<org-roam-buffer>>))
 #+end_src
 
 ****** Smart notes workflow
@@ -780,6 +786,14 @@ This hook makes that an automated process.
 (add-hook 'org-roam-capture-new-node-hook #'jc/tag-new-node-as-draft)
 #+end_src
 
+******* Buffer
+#+begin_src elisp :tangle no :noweb-ref org-roam-buffer
+org-roam-mode-sections
+'((org-roam-backlinks-section :unique t)
+  org-roam-reflinks-section
+  org-roam-unlinked-references-section)
+#+end_src
+
 ** Visual settings
 *** Font face
 Pretty standard.
@@ -821,7 +835,21 @@ Let's give it a try.
 ;;(setq doom-theme 'doom-opera)
 ;;(setq doom-theme 'doom-opera-light)
 ;;(setq doom-theme 'doom-wilmersdorf)
-(setq doom-theme 'doom-zenburn)
+;;(setq doom-theme 'doom-zenburn)
+#+end_src
+
+
+Update! I used the code in the emacs-plus repo to have my theme change with system appearance.
+On my Mac, I have my system appearance set to auto (light in the day, dark at night, you get the picture).
+#+begin_src elisp :tangle no :noweb-ref theme
+(defun jc/apply-theme (appearance)
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'doom-earl-grey t))
+    ('dark (load-theme 'doom-zenburn t))))
+
+(add-hook 'ns-system-appearance-change-functions #'jc/apply-theme)
 #+end_src
 
 *** Line numbers
@@ -1278,6 +1306,7 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
 <<p-info-colors>>
 <<p-major-mode-hydra>>
 <<p-org-ol-tree>>
+<<p-org-roam>>
 <<p-org-roam-desktop>>
 <<p-org-transclusion>>
 <<p-rotate>>
