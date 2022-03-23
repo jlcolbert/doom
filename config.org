@@ -26,12 +26,12 @@
     - [[#theme][Theme]]
     - [[#line-numbers][Line numbers]]
 - [[#packages][Packages]]
-  - [[#consult-org-roam][Consult-org-roam]]
   - [[#doct][Doct]]
   - [[#hydra-posframe][Hydra-posframe]]
   - [[#info-colors][Info-colors]]
   - [[#major-mode-hydra][Major-mode-hydra]]
   - [[#org-ol-tree][Org-ol-tree]]
+  - [[#org-remark][Org-remark]]
   - [[#org-roam-desktop][Org-roam-desktop]]
   - [[#org-transclusion][Org-transclusion]]
   - [[#rotate][Rotate]]
@@ -45,6 +45,7 @@
     - [[#org-captureel][=org-capture.el=]]
     - [[#org-roamel][=org-roam.el=]]
     - [[#posframeel][=posframe.el=]]
+    - [[#zetteldesk-remarkel][=zetteldesk-remark.el=]]
 
 * Introduction
 ** Why Emacs?
@@ -365,7 +366,9 @@ When I'm reading, I don't like to see the emphasis markers.
 I also like having a fancy little triangle for the ellipsis in headings and other collapsible items.
 #+begin_src elisp :tangle no :noweb-ref org-visuals
 (setq org-hide-emphasis-markers t
-      org-ellipsis " ▾ ")
+      org-ellipsis " ▾ "
+      org-startup-with-inline-images t
+      org-image-actual-width '(300))
 #+end_src
 
 And then configuring this package means the emphasis markers will show back up when my cursor is inside that word/phrase.
@@ -677,7 +680,6 @@ I have tried many tools, but org-roam is the one I like best.
 This is gonna be complicated, so chunking it up once again.
 #+begin_src elisp :tangle no :noweb-ref org-roam :noweb yes
 (after! org-roam
-  <<consult-org-roam>>
   <<node-draft-hook>>
   <<org-roam-node-type>>
   (setq
@@ -864,28 +866,6 @@ You hit escape, the number of lines you want to move, and the direction.
 If this makes the performance slow, you can toggle them off manually with ~SPC t l~.
 
 * Packages
-** Consult-org-roam
-This is a really fun package.
-Basically, it gives a live preview feature to searching org-roam files, as well as some ripgrep functionality.
-#+begin_src elisp :tangle no :noweb-ref p-consult-org-roam
-(package! consult-org-roam
-  :recipe (:host github :repo "jgru/consult-org-roam"))
-#+end_src
-
-The intended use is to use the functions below to do searching and have the live preview.
-However, I noticed that after you trigger a function for the first time during a session, it gives the live preview feature to regular org-roam searching.
-So, I did a hacky thing and figured out how to get that without using the package's functions.
-
-I put the ~use-package!~ block within the org-roam block and demanded it, so it loads as soon as org-roam does.
-#+begin_src elisp :tangle no :noweb-ref consult-org-roam
-(use-package! consult-org-roam
-  :demand t
-  :bind
-  (("C-c n e" . consult-org-roam-file-find)
-   ("C-c n b" . consult-org-roam-backlinks)
-   ("C-c n r" . consult-org-roam-search)))
-#+end_src
-
 ** Doct
 Doct is a nicer way of declaring org-capture templates.
 #+begin_src elisp :tangle no :noweb-ref p-doct
@@ -1060,6 +1040,26 @@ A convenient keybinding.
         :desc "Outline" "O" #'org-ol-tree))
 #+end_src
 
+** Org-remark
+#+begin_src elisp :tangle no :noweb-ref p-org-remark
+(package! org-remark)
+#+end_src
+
+#+begin_src elisp :tangle no :noweb-ref org-remark
+(use-package! org-remark
+  :after org
+  :init
+  (require 'org-remark-global-tracking)
+  (org-remark-global-tracking-mode +1)
+  (map! "C-c n m" #'org-remark-mark)
+  :config
+  (map! :map org-remark-mode-map
+        "C-c n o" #'org-remark-open
+        "C-c n ]" #'org-remark-view-next
+        "C-c n [" #'org-remark-view-prev
+        "C-c n R" #'org-remark-remove))
+#+end_src
+
 ** Org-roam-desktop
 Org-roam-desktop is meant to "emulate" the step of the Zettelkasten method where you take a cluster of notes and spread them on a desktop.
 This gives you a visual overview of the notes in that topic cluster, and it makes it easy to arrange them, see new connections, etc.
@@ -1128,7 +1128,8 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
   :config
   (setq zetteldesk-hydra-prefix (kbd "C-c z"))
   (zetteldesk-mode)
-  (require 'zetteldesk-kb))
+  (require 'zetteldesk-kb)
+  (advice-add 'org-remark-highlight-mark :after #'zetteldesk-remark-highlight-advice))
 #+end_src
 
 * Documents
@@ -1240,6 +1241,8 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
 
 <<org-ol-tree>>
 
+<<org-remark>>
+
 <<org-roam-desktop>>
 
 <<org-transclusion>>
@@ -1300,12 +1303,12 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-<<p-consult-org-roam>>
 <<p-doct>>
 <<p-hydra-posframe>>
 <<p-info-colors>>
 <<p-major-mode-hydra>>
 <<p-org-ol-tree>>
+<<p-org-remark>>
 <<p-org-roam>>
 <<p-org-roam-desktop>>
 <<p-org-transclusion>>
@@ -1392,4 +1395,55 @@ You can view it on the repo's [[https://github.com/Vidianos-Giannitsis/zetteldes
 
 ;;;###autoload
 <<jc-frame-bottom-poshandler>>
+#+end_src
+
+*** =zetteldesk-remark.el=
+#+begin_src elisp :tangle autoload/zetteldesk-remark.el
+;;; autoload/zetteldesk-remark.el -*- lexical-binding: t; -*-
+
+;;;###autoload
+(defun zetteldesk-remark-mark (beg end)
+  "Wrapper for `org-remark-mark'.
+Calls the function with `org-remark-notes-file-name' being set to
+zetteldesk-margin-notes.org in the `org-roam-directory'"
+  (interactive (org-remark-region-or-word))
+  (let ((org-remark-notes-file-name
+         (concat org-roam-directory "zetteldesk-margin-notes.org")))
+    (org-remark-mark beg end)))
+
+;;;###autoload
+(defun zetteldesk-remark-highlight-advice
+    (beg end &optional id mode label face properties)
+  "Advice function to be used with `org-remark-highlight-mark'.
+If the current buffer isn't associated to a file, find the
+heading's title, associate it with an org-roam-node and find the
+file associated with that node. Then run the part of
+`org-remark-highlight-save' that wasn't ran if the buffer isn't
+associated with a file. This part is a call to
+`org-remark-highlight-save'.
+This is meant to be used when taking margin notes from the
+,*zetteldesk-scratch* buffer. However, this will only work if the
+current heading's title is associated with a node. In this case
+org-remark will be able to associate the margin note with the
+node its related to."
+  (unless buffer-file-name
+    (let* ((title (org-entry-get nil "ITEM"))
+           (node (org-roam-node-from-title-or-alias title))
+           (file (org-roam-node-file node))
+           (ov (make-overlay beg end nil :front-advance)))
+      (org-remark-highlight-save file
+                                 beg end
+                                 (overlay-properties ov)
+                                 title))))
+
+;;;###autoload
+(defun zetteldesk-switch-to-margin-notes ()
+  "Helper function which goes to the zetteldesk-margin-notes file.
+If `org-remark-mark' is called through its wrapper function
+`zetteldesk-remark-mark', it sets `org-remark-notes-file-name' to
+a specific file, which is meant to be used with all margin notes
+coming from zetteldesk-scratch. This function switches to that
+file."
+  (interactive)
+  (find-file (concat org-roam-directory "zetteldesk-margin-notes.org")))
 #+end_src

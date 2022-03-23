@@ -238,7 +238,9 @@
 
 (after! org
   (setq org-hide-emphasis-markers t
-        org-ellipsis " ▾ ")
+        org-ellipsis " ▾ "
+        org-startup-with-inline-images t
+        org-image-actual-width '(300))
   (after! org-capture
     (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
     (advice-add 'org-mks :override #'org-mks-pretty)
@@ -377,12 +379,6 @@
         org-journal-date-format "%B %d, %Y (%A) "
         org-journal-file-format "%Y-%m-%d.org")
   (after! org-roam
-    (use-package! consult-org-roam
-      :demand t
-      :bind
-      (("C-c n e" . consult-org-roam-file-find)
-       ("C-c n b" . consult-org-roam-backlinks)
-       ("C-c n r" . consult-org-roam-search)))
     (add-hook 'org-roam-capture-new-node-hook #'jc/tag-new-node-as-draft)
     (cl-defmethod org-roam-node-type ((node org-roam-node))
       "Return the TYPE of NODE."
@@ -435,6 +431,19 @@
         :localleader
         :desc "Outline" "O" #'org-ol-tree))
 
+(use-package! org-remark
+  :after org
+  :init
+  (require 'org-remark-global-tracking)
+  (org-remark-global-tracking-mode +1)
+  (map! "C-c n m" #'org-remark-mark)
+  :config
+  (map! :map org-remark-mode-map
+        "C-c n o" #'org-remark-open
+        "C-c n ]" #'org-remark-view-next
+        "C-c n [" #'org-remark-view-prev
+        "C-c n R" #'org-remark-remove))
+
 (use-package! org-roam-desktop
   :after org
   :init
@@ -455,4 +464,5 @@
   :config
   (setq zetteldesk-hydra-prefix (kbd "C-c z"))
   (zetteldesk-mode)
-  (require 'zetteldesk-kb))
+  (require 'zetteldesk-kb)
+  (advice-add 'org-remark-highlight-mark :after #'zetteldesk-remark-highlight-advice))
